@@ -1,13 +1,13 @@
 package com.example.questionview.views
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.RequiresApi
+import com.example.questionview.R
 
 
 /**
@@ -21,44 +21,48 @@ import androidx.annotation.RequiresApi
  */
 class TestView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private val paint = Paint()
+    private var mPicture=Picture()
+
 
     init {
         initPaint()
+        recording()
+
     }
+
 
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var wSize = MeasureSpec.getSize(widthMeasureSpec)
-        var wMode = MeasureSpec.getMode(widthMeasureSpec)
-
-        var hSize = MeasureSpec.getSize(heightMeasureSpec)
-        var hMode = MeasureSpec.getMode(heightMeasureSpec)
-
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
-
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
     }
 
+    @SuppressLint("DrawAllocation")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onDraw(canvas: Canvas?) {
+        canvas!!.drawPicture(mPicture, RectF(0f, 0f, mPicture.width.toFloat(), 200f))
+        val bitmap=BitmapFactory.decodeResource(context.resources, R.mipmap.codekit)
 
-        //点
-        canvas!!.drawPoint(200f, 200f, paint)
-        canvas.drawPoints(floatArrayOf(500f, 500f, 500f, 600f, 500f, 700f), paint)
+        canvas.drawBitmap(bitmap, 200f,500f, Paint())
+
+//        //点
+//        canvas!!.drawPoint(200f, 200f, paint)
+//        canvas.drawPoints(floatArrayOf(500f, 500f, 500f, 600f, 500f, 200f), paint)
 
         //线
-        canvas.drawLine(200f,200f,500f,600f,paint)
-        canvas.drawLines(floatArrayOf(100f,200f,200f,200f,100f,300f,200f,300f),paint)
+//        canvas.drawLine(300f,300f,700f,300f,paint)
+//        canvas.drawLines(floatArrayOf(100f,200f,200f,200f,100f,300f,200f,300f),paint)
 
         //矩形Rect和RectF两种最大的区别事精度不同 前者事int  后者事float
-        canvas.drawRect(100f, 100f, 800f, 400f, paint)
-
-        //圆角矩形
-        canvas.drawRoundRect(100f,100f,800f,400f,30f,30f,paint)
-
-        //圆
-        canvas.drawCircle(100f,200f,150f,paint)
+//        canvas.drawRect(100f, 100f, 1000f, 400f, paint)
+//
+//        //圆角矩形
+//        canvas.drawRoundRect(100f,100f,800f,400f,30f,30f,paint)
+//
+//        //圆
+//        canvas.drawCircle(200f,200f,150f,paint)
 
     }
 
@@ -66,6 +70,21 @@ class TestView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         paint.color = Color.RED
         paint.style = Paint.Style.FILL
         paint.strokeWidth = 10f
+    }
+
+
+    private fun recording(){
+        val canvas=mPicture.beginRecording(500,500)
+        val paint=Paint()
+        paint.style=Paint.Style.FILL
+        paint.color=Color.RED
+        paint.isAntiAlias=true
+        paint.strokeWidth=6f
+
+        canvas.translate(250f,250f)
+        canvas.drawCircle(100f,100f,100f,paint)
+        mPicture.endRecording()
+
     }
 
 
